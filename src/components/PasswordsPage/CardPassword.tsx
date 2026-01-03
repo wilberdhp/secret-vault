@@ -2,6 +2,7 @@ import React from "react";
 import { TypePassword } from "../../types/types";
 import { Edit, Eye, EyeOff, Trash2 } from "lucide-react";
 import useCardPassword from "../../hooks/Passwords/useCardPassword";
+import { KeyRoundIcon } from "lucide-react";
 
 interface CardPasswordProps {
   password: TypePassword
@@ -17,11 +18,22 @@ function CardPassword({ password, getPasswords }: CardPasswordProps): React.JSX.
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
     >
       <div className="flex items-center mb-4">
-        <img
+        {
+          password.image ? (
+          <img
+            src={password.image}
+            alt={password.account}
+            className="w-10 h-10 rounded mr-3"
+          />            
+          ) : (
+            <KeyRoundIcon className="text-gray-900 dark:text-white w-10 h-10 rounded mr-3" />
+          )
+        }
+        {/* <img
           src={password.image}
           alt={password.account}
           className="w-10 h-10 rounded mr-3"
-        />
+        /> */}
         <h3 className="font-semibold text-gray-900 dark:text-white">{password.account}</h3>
       </div>
       <div className="space-y-2">
