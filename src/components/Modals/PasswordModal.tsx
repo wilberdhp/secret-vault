@@ -1,7 +1,6 @@
 import BaseModal from "./BaseModal";
 import { ImageIcon, Shield } from "lucide-react";
 import usePasswordModal from "../../hooks/Passwords/usePasswordModal";
-import ImageUpload from "../ImageUpload";
 import { estimateCrackTime } from "../../lib/password-functions";
 
 interface PasswordModal {
@@ -10,7 +9,7 @@ interface PasswordModal {
 
 function PasswordModal({ getPasswords }: PasswordModal) {
   
-  const { passwordForm, setPasswordForm, generatedPassword, passwordStrength, isEditing, closeModal, generateSecurePassword, analyzePasswordStrength, handleAddPassword, getAppLogo, assignImage, filteredPredefinedAccounts, showAccountSuggestions, setShowAccountSuggestions, passwordFormErrors } = usePasswordModal({ getPasswords })
+  const { passwordForm, setPasswordForm, generatedPassword, passwordStrength, isEditing, closeModal, generateSecurePassword, analyzePasswordStrength, handleAddPassword, getAppLogo, filteredPredefinedAccounts, showAccountSuggestions, setShowAccountSuggestions, passwordFormErrors } = usePasswordModal({ getPasswords })
 
   
 
@@ -35,9 +34,6 @@ function PasswordModal({ getPasswords }: PasswordModal) {
               <ImageIcon className="h-8 w-8 text-gray-400" />
             </div>
           )}
-          <ImageUpload 
-            assignImage={assignImage}
-          />
         </div>
       </div>
 

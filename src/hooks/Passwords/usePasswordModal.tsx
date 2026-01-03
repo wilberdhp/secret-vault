@@ -18,9 +18,6 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
   const [showAccountSuggestions, setShowAccountSuggestions] = useState(false);
   const [passwordFormErrors, setPasswordFormErrors] = useState<PasswordError>({ account: "", password: "", username: "" });
 
-  const assignImage = (image: string) => {
-    setPasswordForm({ ...passwordForm, image });
-  }
 
   const { editingPassword, changeEditingPassword, changeShowPasswordModal, idUser, changeShowErrorModal, setError, resolvedTheme } = useApp()
 
@@ -138,7 +135,6 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
     analyzePasswordStrength, 
     handleAddPassword, 
     getAppLogo, 
-    assignImage,
     showAccountSuggestions, 
     setShowAccountSuggestions,
     filteredPredefinedAccounts,

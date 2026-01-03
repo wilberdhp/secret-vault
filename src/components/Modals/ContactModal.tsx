@@ -1,5 +1,4 @@
 import useContactModal from "../../hooks/Contacts/useContactModal";
-import ImageUpload from "../ImageUpload";
 import BaseModal from "./BaseModal";
 import { Plus, UserCircle, X } from "lucide-react";
 
@@ -8,7 +7,7 @@ interface ContactModalProps {
 }
 
 function ContactModal({ getContacts }: ContactModalProps) {
-  const { contactForm, setContactForm, closeModal, isEditing, assignImage, updatePhone, addPhoneField, handleAddContact, contactFormErrors, removePhoneField } = useContactModal({ getContacts })
+  const { contactForm, setContactForm, closeModal, isEditing, updatePhone, addPhoneField, handleAddContact, contactFormErrors, removePhoneField } = useContactModal({ getContacts })
 
   return (
     <BaseModal
@@ -31,9 +30,6 @@ function ContactModal({ getContacts }: ContactModalProps) {
               <UserCircle className="h-8 w-8 text-gray-400" />
             </div>
           )}
-          <ImageUpload 
-            assignImage={assignImage}
-          />
         </div>
       </div>
 

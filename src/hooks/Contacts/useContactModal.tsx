@@ -26,10 +26,6 @@ function useContactModal({ getContacts }: useContactModalProps) {
     
   }, [contactForm])
 
-  const assignImage = (image: string) => {
-    setContactForm({ ...contactForm, image });
-  }
-
   const updatePhone = (index: number, value: string) => {
     const newPhones = [...contactForm.phones];
     newPhones[index] = value;
@@ -114,39 +110,11 @@ function useContactModal({ getContacts }: useContactModalProps) {
     await getContacts()
   };
 
-  // const handleAddContact = async () => {
-  //   if (contactForm.name && contactForm.phones[0]) {
-  //     if (isEditing) {
-  //       const idContact = editingContact.id
-  //       const { name, email, phones } = contactForm
-
-  //       await invoke("update_contact", { idContact, name, email, phones })
-  //         .then()
-  //         .catch((error) => {
-  //           console.error(error)
-  //         })
-  //     } else {
-  //       const { name, email, phones } = contactForm
-
-  //       await invoke("insert_contact", { idUser, name, email, phones })
-  //         .then()
-  //         .catch((error) => {
-  //           console.error(error)
-  //         })
-  //     }
-  //     changeShowContactModal(false);
-  //     setContactForm({ name: '', image: null, email: '', phones: [''] });
-
-  //     await getContacts()
-  //   }
-  // };
-
   return {
     contactForm, 
     setContactForm,
     closeModal,
     isEditing,
-    assignImage,
     updatePhone,
     addPhoneField,
     handleAddContact,
