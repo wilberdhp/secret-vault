@@ -1,50 +1,56 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import PasswordsPage from "./components/PasswordsPage/PasswordsPage";
+import ContactsPage from "./components/ContactPage/ContactsPage";
+import NotesPage from "./components/NotesPage/NotesPage";
+import SettingsPage from "./components/SettingsPage/SettingsPage";
+import ExportModal from "./components/Modals/ExportModal";
+import useApp from "./hooks/useApp";
+import Sidebar from "./components/SideBar/Sidebar";
+import LogIn from "./components/LogIn";
+import { useEffect } from "react";
+import { setupSystemThemeListener } from "./lib/theme";
+import WarningModal from "./components/Modals/WarningModal";
+import ErrorModal from "./components/Modals/ErrorModal";
+
+// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const { currentPage, showExportModal, showWarningModal, showErrorModal, logged, idUser, initTheme } = useApp()
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+
+  useEffect(() => {
+    initTheme();
+    setupSystemThemeListener();
+  }, [])
+
+  if (!logged || !idUser) {
+    return (
+      <LogIn />
+    )
   }
 
+
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+      <Sidebar />
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="flex-1 overflow-hidden">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-auto h-dvh">
+
+          { currentPage === 'passwords' && <PasswordsPage /> }
+          { currentPage === 'contacts' && <ContactsPage/> }
+          { currentPage === 'notes' && <NotesPage/> }
+          { currentPage === 'settings' && <SettingsPage/> }
+
+        </main>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      
+      { showExportModal && <ExportModal/> }
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      { showWarningModal && <WarningModal /> }
+
+      { showErrorModal && <ErrorModal /> }
+    </div>
   );
 }
 
