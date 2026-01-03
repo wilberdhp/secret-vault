@@ -3496,8 +3496,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "secret-vault"
-version = "0.1.0"
+name = "secret_vault"
+version = "0.1.3"
 dependencies = [
  "argon2",
  "dotenvy",
