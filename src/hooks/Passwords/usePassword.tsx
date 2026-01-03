@@ -26,9 +26,6 @@ export default function usePassword() {
           };
         });
 
-        console.log("Contraseñas recibidas: ", value)
-        console.log("Contraseñas modificadas: ", newPasswords)
-
         setPasswords(newPasswords)
       })
       .catch((error) => {
@@ -54,14 +51,6 @@ export default function usePassword() {
           setError({ message: error })
         })
     })
-
-    // await invoke("delete_all_passwords", { idUser })
-    //   .then(() => {
-    //     getPasswords()
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //   })
   }
 
   const addPassword = () => {

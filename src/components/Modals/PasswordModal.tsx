@@ -49,7 +49,7 @@ function PasswordModal({ getPasswords }: PasswordModal) {
             setPasswordForm({
               ...passwordForm,
               account,
-              image: passwordForm.image || getAppLogo(account),
+              image: passwordForm.image
             });
             setShowAccountSuggestions(account.trim().length > 0);
           }}
