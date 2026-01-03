@@ -104,18 +104,6 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
     await getPasswords()
   };
 
-  const getAppLogo = (account: string) => {
-    const logos = ["netflix", "facebook", "instagram", "google", "apple", "twitter", "whatsapp"]
-
-    if (logos.includes(account)) {
-      // TODO: hacer solicitud al backend para traer esa imagen
-      // return imagen
-    }
-    
-    // TODO: modificar la imagen por defecto.
-    return 'https://placehold.co/40x40/6c757d/ffffff?text=?';
-  };
-
   const predefinedAccounts = getPredefinedAccounts(resolvedTheme);
 
   const search = passwordForm.account.toLowerCase();
@@ -134,7 +122,6 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
     generateSecurePassword, 
     analyzePasswordStrength, 
     handleAddPassword, 
-    getAppLogo, 
     showAccountSuggestions, 
     setShowAccountSuggestions,
     filteredPredefinedAccounts,

@@ -9,7 +9,7 @@ interface PasswordModal {
 
 function PasswordModal({ getPasswords }: PasswordModal) {
   
-  const { passwordForm, setPasswordForm, generatedPassword, passwordStrength, isEditing, closeModal, generateSecurePassword, analyzePasswordStrength, handleAddPassword, getAppLogo, filteredPredefinedAccounts, showAccountSuggestions, setShowAccountSuggestions, passwordFormErrors } = usePasswordModal({ getPasswords })
+  const { passwordForm, setPasswordForm, generatedPassword, passwordStrength, isEditing, closeModal, generateSecurePassword, analyzePasswordStrength, handleAddPassword, filteredPredefinedAccounts, showAccountSuggestions, setShowAccountSuggestions, passwordFormErrors } = usePasswordModal({ getPasswords })
 
   
 
