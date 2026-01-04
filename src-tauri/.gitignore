@@ -7,3 +7,6 @@
 /gen/schemas
 
 .env
+
+# secret.rs contains sensitive information
+/src-tauri/src/secret.rs

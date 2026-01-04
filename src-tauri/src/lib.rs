@@ -1,3 +1,4 @@
+use secrecy::SecretString;
 use tauri::Manager;
 
 mod db;
@@ -5,7 +6,16 @@ mod models;
 mod security;
 mod commands;
 mod state;
-mod env;
+
+mod secret;
+use secret::MASTER_PASSWORD;
+
+fn get_master_password() -> SecretString {
+    if MASTER_PASSWORD.is_empty() {
+        panic!("MASTER_PASSWORD está vacía. Revisa el archivo secret.rs. Si no existe lee el README para configurarlo");
+    }
+    SecretString::new(String::from(MASTER_PASSWORD))
+}
 
 use crate::state::AppState;
 use crate::db::db::init_db;
@@ -19,7 +29,7 @@ use crate::commands::users::{login, signup, delete_user, change_password, change
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            let master_password = env::get_master_password();
+            let master_password = get_master_password();
 
             let pool = tauri::async_runtime::block_on(
                 init_db(app.app_handle(), master_password)
