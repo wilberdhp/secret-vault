@@ -21,7 +21,7 @@ function LogIn(): React.JSX.Element {
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <Lock className="mx-auto h-16 w-16 text-blue-600 mb-4" />
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Secure Vault</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Secret Vault</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             {showSignup 
               ? 'Crea tu cuenta para comenzar' 

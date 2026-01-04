@@ -28,7 +28,7 @@ pub async fn init_db(app: &tauri::AppHandle, master_password: SecretString) -> S
     .app_data_dir()
     .expect("No se pudo resolver app_data_dir");
     
-  let db_dir = PathBuf::from(appdata).join("Secure Vault").join("database");
+  let db_dir = PathBuf::from(appdata).join("Secret Vault").join("database");
   fs::create_dir_all(&db_dir).expect("No se pudo crear el directorio");
 
   // Ruta de base de datos y salt
