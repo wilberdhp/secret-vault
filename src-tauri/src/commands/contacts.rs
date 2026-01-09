@@ -6,10 +6,10 @@ use sqlx::FromRow;
 
 #[derive(Debug, Serialize, FromRow)]
 pub struct ContactDto2 {
-    id: String,
-    name: String,
-    email: String,
-    phones: Vec<String>,
+    pub id: String,
+    pub name: String,
+    pub email: String,
+    pub phones: Vec<String>,
 }
 
 #[tauri::command]

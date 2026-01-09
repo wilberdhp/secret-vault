@@ -6,6 +6,7 @@ mod models;
 mod security;
 mod commands;
 mod state;
+mod exports;
 
 mod secret;
 use secret::MASTER_PASSWORD;
