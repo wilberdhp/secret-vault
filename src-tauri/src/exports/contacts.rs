@@ -10,20 +10,24 @@ struct CsvContact {
   phones: String,
 }
 
-pub fn write_csv<W: Write>(
-    writer: W,
+pub fn write_contacts_vcf<W: Write>(
+    writer: &mut W,
     contacts: &[ContactDto2],
-) -> Result<(), Box<dyn std::error::Error>> {
-    let mut wtr = csv::Writer::from_writer(writer);
-
+) -> std::io::Result<()> {
     for c in contacts {
-        wtr.serialize(CsvContact {
-            name: c.name.clone(),
-            phones: c.phones.join(" | "),
-            email: c.email.clone(),
-        })?;
-    }
+        writeln!(writer, "BEGIN:VCARD")?;
+        writeln!(writer, "VERSION:3.0")?;
+        writeln!(writer, "FN:{}", &c.name)?;
 
-    wtr.flush()?;
+        for phone in &c.phones {
+            writeln!(writer, "TEL;TYPE=CELL:{}", phone)?;
+        }
+
+        if !c.email.is_empty() {
+            writeln!(writer, "EMAIL:{}", &c.email)?;
+        }
+
+        writeln!(writer, "END:VCARD")?;
+    }
     Ok(())
 }
