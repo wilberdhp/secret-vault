@@ -1,7 +1,7 @@
 use crate::models::notes::NoteDto;
 use std::{io::Write};
 
-pub fn write_txt<W: Write>(
+pub fn write_notes_txt<W: Write>(
     writer: &mut W,
     note: &NoteDto,
 ) -> std::io::Result<()> {
