@@ -1,6 +1,5 @@
 use crate::models::contacts::ContactDto;
-use std::{io::Write};
-
+use std::io::Write;
 
 pub fn write_contacts_vcf<W: Write>(
     writer: &mut W,
