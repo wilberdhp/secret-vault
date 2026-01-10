@@ -1,3 +1,4 @@
+use zip::{ZipWriter, write::FileOptions};
 use crate::{exports::contacts::write_contacts_vcf};
 use std::fs::{File, create_dir_all};
 use std::io::BufWriter;
@@ -96,5 +97,50 @@ pub async fn export_passwords_csv_file(state: tauri::State<'_, AppState>, path: 
     let writer = BufWriter::new(file);
     write_passwords_csv(writer, vec_passwords).map_err(|_| ERROR_MESSAGE.to_string())?;
 
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn export_zip(state: tauri::State<'_, AppState>, path: &str, id_user: &str, password: &str) -> Result<(), String> {
+
+    const ERROR_MESSAGE: &str = "Error interno del sistema al intentar exportar los datos";
+
+    verify_user_credentials(state.clone(), id_user, password)
+        .await
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    let file = File::create(path).map_err(|_| ERROR_MESSAGE.to_string())?;
+    let mut zip = ZipWriter::new(file);
+
+    let options = FileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated);
+
+    // Passwords CSV
+    let passwords = crate::models::passwords::get_all(&state.pool(), id_user)
+        .await
+        .map_err(|_| ERROR_MESSAGE.to_string())?;
+    zip.start_file("passwords.csv", options.clone()).map_err(|_| ERROR_MESSAGE.to_string())?;
+    write_passwords_csv(&mut zip, passwords).map_err(|_| ERROR_MESSAGE.to_string())?;
+
+    // Contacts VCF
+    let contacts = crate::models::contacts::get_all(&state.pool(), id_user)
+        .await
+        .map_err(|_| ERROR_MESSAGE.to_string())?;
+
+    zip.start_file("contacts.vcf", options.clone()).map_err(|_| ERROR_MESSAGE.to_string())?;
+    write_contacts_vcf(&mut zip, contacts).map_err(|_| ERROR_MESSAGE.to_string())?;
+
+    // Notes TXT
+    let notes = crate::models::notes::get_all(&state.pool(), id_user)
+        .await
+        .map_err(|_| ERROR_MESSAGE.to_string())?;
+
+    for (i, note) in notes.iter().enumerate() {
+        let name = format!("notes/note_{}_{}.txt", i + 1, &note.title);
+        zip.start_file(name, options.clone()).map_err(|_| ERROR_MESSAGE.to_string())?;
+        write_notes_txt(&mut zip, note).map_err(|_| ERROR_MESSAGE.to_string())?;
+    }
+
+    zip.finish().map_err(|_| ERROR_MESSAGE.to_string())?;
     Ok(())
 }
