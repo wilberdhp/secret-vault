@@ -42,8 +42,27 @@ function useExportModal() {
   };
 
   // Export contacts to Excel
-  const handleExportContacts = () => {
-    // TODO: Solicitar sacar la información
+  const handleExportContacts = async () => {
+    if (!exportPassword.trim()) {
+      changeShowErrorModal(true);
+      setError({ message: 'La contraseña es obligatoria para exportar los datos.', title: 'Error de Exportación' });
+      return;
+    }
+   
+    const path = await save({
+      filters: [{ name: 'VCF', extensions: ['vcf'] }],
+      defaultPath: 'contacts.vcf'
+    });
+
+    if (!path) return;
+
+    await invoke('export_contacts', { idUser, path, password: exportPassword })
+    .catch((error) => {
+      changeShowErrorModal(true);
+      setError({ message: error, title: 'Error de Exportación' });
+    });
+    
+    changeShowExportModal(false);
   };
 
   // Export notes to Excel
