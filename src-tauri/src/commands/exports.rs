@@ -2,7 +2,6 @@ use crate::{exports::contacts::write_contacts_vcf};
 use std::fs::{File, create_dir_all};
 use std::io::BufWriter;
 use crate::exports::notes::write_notes_txt;
-use crate::models::passwords::PasswordDto;
 use crate::exports::passwords::write_passwords_csv;
 use crate::models::users as us;
 
@@ -79,8 +78,23 @@ pub async fn export_notes_txt_files(state: tauri::State<'_, AppState>, path: &st
 }
 
 #[tauri::command]
-pub fn export_passwords_csv_file(path: &str, passwords: &[PasswordDto]) -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::create(path)?;
+pub async fn export_passwords_csv_file(state: tauri::State<'_, AppState>, path: &str, id_user: &str, password: &str) -> Result<(), String> {
+
+    const ERROR_MESSAGE: &str = "Error interno del sistema al intentar exportar las contraseñas";
+
+    verify_user_credentials(state.clone(), id_user, password)
+        .await
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    use crate::models::passwords::get_all;
+
+    let vec_passwords = get_all(&state.pool(), id_user)
+        .await
+        .map_err(|_| ERROR_MESSAGE.to_string())?;
+
+    let file = File::create(path).map_err(|_| ERROR_MESSAGE.to_string())?;
     let writer = BufWriter::new(file);
-    write_passwords_csv(writer, passwords)
+    write_passwords_csv(writer, vec_passwords).map_err(|_| ERROR_MESSAGE.to_string())?;
+
+    Ok(())
 }
