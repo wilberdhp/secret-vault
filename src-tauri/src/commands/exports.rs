@@ -100,10 +100,6 @@ pub async fn export_passwords(
 ) -> Result<(), String> {
     const ERROR_MESSAGE: &str = "Error interno del sistema al intentar exportar las contraseñas";
 
-    println!("Id de usuario: {}", id_user);
-    println!("Ruta del archivo: {}", path);
-    println!("Contraseña: {}", password);
-
     verify_user_credentials(state.clone(), id_user, password)
         .await
         .map_err(|_| INVALID_CREDENTIALS.to_string())?;
