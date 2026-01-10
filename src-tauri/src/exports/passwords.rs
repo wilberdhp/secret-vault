@@ -12,7 +12,7 @@ struct CsvPassword {
 
 pub fn write_passwords_csv<W: Write>(
     writer: W,
-    passwords: &[PasswordDto],
+    passwords: Vec<PasswordDto>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut wtr = csv::Writer::from_writer(writer);
 
