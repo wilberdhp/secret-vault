@@ -3,6 +3,8 @@ use std::fs::{File, create_dir_all};
 use std::io::BufWriter;
 use crate::models::notes::NoteDto;
 use crate::exports::notes::write_notes_txt;
+use crate::models::passwords::PasswordDto;
+use crate::exports::passwords::write_passwords_csv;
 
 
 #[tauri::command]
@@ -24,4 +26,11 @@ pub fn export_notes_txt_files(dir: &str, notes: &[NoteDto]) -> std::io::Result<(
     }
 
     Ok(())
+}
+
+#[tauri::command]
+pub fn export_passwords_csv_file(path: &str, passwords: &[PasswordDto]) -> Result<(), Box<dyn std::error::Error>> {
+    let file = File::create(path)?;
+    let writer = BufWriter::new(file);
+    write_passwords_csv(writer, passwords)
 }
