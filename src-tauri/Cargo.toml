@@ -46,7 +46,7 @@ zeroize = "1.7"
 
 # Exportación
 csv = "1.3"
-zip = "0.6"
+zip = "7.0.0"
 tauri-plugin-dialog = "2"
 
 
