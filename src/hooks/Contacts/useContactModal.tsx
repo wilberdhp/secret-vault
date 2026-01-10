@@ -19,9 +19,11 @@ function useContactModal({ getContacts }: useContactModalProps) {
   const [contactFormErrors, setContactFormErrors] = useState<ContactError>({ name: "", email: "", phone: "" });
 
   useEffect(() => {
-    if (!!contactFormErrors) {
+
+    const { name, email, phone } = contactFormErrors
+
+    if (name.trim() || email.trim() || phone.trim()) {
       setContactFormErrors({ name: "", email: "", phone: "" })
-      console.log("Hay errores")
     }
     
   }, [contactForm])
