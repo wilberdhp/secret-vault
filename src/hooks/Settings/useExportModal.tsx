@@ -1,4 +1,4 @@
-import { save } from '@tauri-apps/plugin-dialog';
+import { save, open } from '@tauri-apps/plugin-dialog';
 import { invoke } from "@tauri-apps/api/core";
 import { useState } from 'react'
 import useApp from '../useApp';
@@ -66,8 +66,27 @@ function useExportModal() {
   };
 
   // Export notes to Excel
-  const handleExportNotes = () => {
-    // TODO: Solicitar sacar la información
+  const handleExportNotes = async () => {
+      if (!exportPassword.trim()) {
+        changeShowErrorModal(true);
+        setError({ message: 'La contraseña es obligatoria para exportar los datos.', title: 'Error de Exportación' });
+        return;
+      }
+    
+      const path = await open({
+        multiple: false,
+        directory: true
+      });
+
+      if (!path) return;
+
+      await invoke('export_notes', { idUser, path, password: exportPassword })
+      .catch((error) => {
+        changeShowErrorModal(true);
+        setError({ message: error, title: 'Error de Exportación' });
+      });
+      
+      changeShowExportModal(false);
   };
 
   const closeModal = () => {
