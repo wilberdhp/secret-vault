@@ -1,17 +1,55 @@
-use crate::{commands::contacts::ContactDto2, exports::contacts::write_contacts_vcf};
+use crate::{models::contacts::ContactDto, exports::contacts::write_contacts_vcf};
 use std::fs::{File, create_dir_all};
 use std::io::BufWriter;
 use crate::models::notes::NoteDto;
 use crate::exports::notes::write_notes_txt;
 use crate::models::passwords::PasswordDto;
 use crate::exports::passwords::write_passwords_csv;
+use crate::models::users as us;
 
+const INVALID_CREDENTIALS: &str = "Credenciales inválidas";
+
+use crate::security;
+use crate::state::AppState;
+use argon2::PasswordVerifier;
+use argon2::password_hash::PasswordHash;
+
+async fn verify_user_credentials(state: tauri::State<'_, AppState>, id_user: &str, password: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let account_password = us::find_user_to_verification_password(state.pool(), &id_user)
+        .await
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    let parsed_hash = PasswordHash::new(&account_password)
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    let argon2 = security::password::argon2_config();
+
+    argon2
+        .verify_password(password.as_bytes(), &parsed_hash)
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    Ok(())
+}
 
 #[tauri::command]
-pub fn export_contacts_vcf_file(path: &str, contacts: &[ContactDto2]) -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::create(path)?;
+pub async fn export_contacts_vcf_file(state: tauri::State<'_, AppState>, path: &str, id_user: &str, password: &str) -> Result<(), String> {
+    
+    use crate::models::contacts::get_all;
+
+    verify_user_credentials(state.clone(), id_user, password)
+        .await
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    let contacts = get_all(&state.pool(), id_user)
+        .await
+        .map_err(|_| "Error al exportar los contactos".to_string())?;
+    
+    let file = File::create(path).map_err(|_| "Error interno del sistema".to_string())?;
     let mut writer = BufWriter::new(file);
-    Ok(write_contacts_vcf(&mut writer, contacts)?)
+
+    write_contacts_vcf(&mut writer, contacts).map_err(|_| "Error interno del sistema".to_string())?;
+
+    Ok(())
 }
 
 #[tauri::command]
