@@ -1,4 +1,4 @@
-use crate::{models::contacts::ContactDto, exports::contacts::write_contacts_vcf};
+use crate::{exports::contacts::write_contacts_vcf};
 use std::fs::{File, create_dir_all};
 use std::io::BufWriter;
 use crate::models::notes::NoteDto;
@@ -53,14 +53,23 @@ pub async fn export_contacts_vcf_file(state: tauri::State<'_, AppState>, path: &
 }
 
 #[tauri::command]
-pub fn export_notes_txt_files(dir: &str, notes: &[NoteDto]) -> std::io::Result<()> {
-    create_dir_all(dir)?;
+pub async fn export_notes_txt_files(state: tauri::State<'_, AppState>, path: &str, id_user: &str, password: &str) -> Result<(), String> {
+    
+    verify_user_credentials(state.clone(), id_user, password)
+        .await
+        .map_err(|_| INVALID_CREDENTIALS.to_string())?;
+
+    use crate::models::notes::get_all;
+
+    let notes = get_all(&state.pool(), id_user)
+        .await
+        .map_err(|_| "Error al exportar las notas".to_string())?;
 
     for (i, note) in notes.iter().enumerate() {
-        let path = format!("{}/note_{}_{}.txt", dir, i + 1, &note.title);
-        let file = File::create(path)?;
+        let path = format!("{}/note_{}_{}.txt", path, i + 1, &note.title);
+        let file = File::create(path).map_err(|_| "Error interno del sistema al intentar exportar las notas".to_string())?;
         let mut writer = BufWriter::new(file);
-        write_notes_txt(&mut writer, note)?;
+        write_notes_txt(&mut writer, note).map_err(|_| "Error interno del sistema al intentar exportar las notas".to_string())?;
     }
 
     Ok(())
