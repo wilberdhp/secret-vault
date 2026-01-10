@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::commands::contacts::ContactDto2;
+use crate::models::contacts::ContactDto;
 use std::{io::Write};
 
 #[derive(Serialize)]
@@ -12,7 +12,7 @@ struct CsvContact {
 
 pub fn write_contacts_vcf<W: Write>(
     writer: &mut W,
-    contacts: &[ContactDto2],
+    contacts: Vec<ContactDto>,
 ) -> std::io::Result<()> {
     for c in contacts {
         writeln!(writer, "BEGIN:VCARD")?;
