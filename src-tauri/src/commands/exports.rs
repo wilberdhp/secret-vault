@@ -4,7 +4,7 @@ use crate::exports::passwords::write_passwords_csv;
 use crate::models::users as us;
 use std::fs::{create_dir_all, File};
 use std::io::BufWriter;
-use zip::{write::FileOptions, ZipWriter};
+use zip::{write::SimpleFileOptions, ZipWriter};
 
 const INVALID_CREDENTIALS: &str = "Credenciales inválidas";
 
@@ -133,7 +133,9 @@ pub async fn export_zip(
     let file = File::create(path).map_err(|_| ERROR_MESSAGE.to_string())?;
     let mut zip = ZipWriter::new(file);
 
-    let options = FileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+    let options = SimpleFileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated)
+        .unix_permissions(0o755);
 
     // Passwords CSV
     let passwords = crate::models::passwords::get_all(&state.pool(), id_user)
