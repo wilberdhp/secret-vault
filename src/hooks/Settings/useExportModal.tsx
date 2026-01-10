@@ -4,16 +4,33 @@ import { useState } from 'react'
 import useApp from '../useApp';
 
 
-
 function useExportModal() {
   const [exportPassword, setExportPassword] = useState('');
 
   const { changeShowExportModal, changeShowErrorModal, setError, idUser } = useApp()
+  
+  // Export all data to ZIP
+  const handleExportAll = async () => {
+    if (!exportPassword.trim()) {
+      changeShowErrorModal(true);
+      setError({ message: 'La contraseña es obligatoria para exportar los datos.', title: 'Error de Exportación' });
+      return;
+    }
+   
+    const path = await save({
+      filters: [{ name: 'ZIP', extensions: ['zip'] }],
+      defaultPath: 'backup.zip'
+    });
 
-  // En todas las funciones hay que pasar el idUser, ruta del archivo
+    if (!path) return;
 
-  const handleExportData = () => {
-    // TODO: Solicitar la exportación de todos los datos
+    await invoke('export_zip', { idUser, path, password: exportPassword })
+    .catch((error) => {
+      changeShowErrorModal(true);
+      setError({ message: error, title: 'Error de Exportación' });
+    });
+    
+    changeShowExportModal(false);
   };
 
   // Export passwords to Excel
@@ -96,7 +113,7 @@ function useExportModal() {
   return {
     exportPassword, 
     setExportPassword,
-    handleExportData,
+    handleExportAll,
     handleExportPasswords,
     handleExportContacts,
     handleExportNotes,

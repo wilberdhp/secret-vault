@@ -3,7 +3,7 @@ import BaseModal from "./BaseModal";
 
 function ExportModal() {
 
-  const { exportPassword, setExportPassword, closeModal, handleExportContacts, handleExportData, handleExportNotes, handleExportPasswords } = useExportModal()
+  const { exportPassword, setExportPassword, closeModal, handleExportContacts, handleExportAll, handleExportNotes, handleExportPasswords } = useExportModal()
 
   return (
     <BaseModal closeModal={closeModal} title="Exportar Datos">
@@ -30,7 +30,7 @@ function ExportModal() {
         </h4>
         <div className="grid grid-cols-1 gap-3">
           <button
-            onClick={handleExportData}
+            onClick={handleExportAll}
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex justify-between"
           >
             <span>Exportar todos los datos</span> <span>.zip</span>
