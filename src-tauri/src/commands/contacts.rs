@@ -1,22 +1,13 @@
 use crate::state::AppState;
-use crate::models::contacts as ct;
-use std::collections::HashMap;
-use serde::Serialize;
-use sqlx::FromRow;
+use crate::models::contacts::{self  as ct, ContactDto};
 
-#[derive(Debug, Serialize, FromRow)]
-pub struct ContactDto2 {
-    pub id: String,
-    pub name: String,
-    pub email: String,
-    pub phones: Vec<String>,
-}
+
 
 #[tauri::command]
 pub async fn get_all_contacts(
     state: tauri::State<'_, AppState>,
     id_user: String,
-) -> Result<Vec<ContactDto2>, String> {
+) -> Result<Vec<ContactDto>, String> {
 
     let id_user = id_user.trim();
 
@@ -31,48 +22,8 @@ pub async fn get_all_contacts(
                 .to_string()
         })?;
 
-    let mut map: HashMap<String, ContactDto2> = HashMap::new();
-
-    for row in rows {
-        map.entry(row.id.clone())
-            .and_modify(|contact| contact.phones.push(row.phone.clone()))
-            .or_insert(ContactDto2 {
-                id: row.id,
-                name: row.name,
-                email: row.email,
-                phones: vec![row.phone],
-            });
-    }
-
-    Ok(map.into_values().collect())
+    Ok(rows)
 }
-
-// #[tauri::command]
-// pub async fn insert_contact(
-//     state: tauri::State<'_, AppState>,
-//     id_user: String,
-//     name: String,
-//     email: String,
-//     phones: Vec<&str>
-// ) -> Result<(), String> {
-
-//     if id_user.is_empty() {
-//         return Err("Error al agregar el contacto".to_string());
-//     }
-
-//     ct::insert(
-//         &state.pool(),
-//         &id_user,
-//         &name,
-//         &email,
-//         phones
-//     )
-//     .await
-//     .map_err(|e| e.to_string())?;
-
-//     Ok(())
-// }
-
 
 #[tauri::command]
 pub async fn insert_contact(
@@ -126,28 +77,6 @@ pub async fn insert_contact(
 
     Ok(())
 }
-
-
-// #[tauri::command]
-// pub async fn update_contact(
-//     state: tauri::State<'_, AppState>,
-//     id_contact: String,
-//     name: String,
-//     email: String,
-//     phones: Vec<&str>
-// ) -> Result<(), String> {
-//     ct::update(
-//         &state.pool(), 
-//         &id_contact, 
-//         &name,
-//         &email,
-//         phones
-//     )
-//     .await
-//     .map_err(|e| e.to_string())?;
-
-//     Ok(())
-// }
 
 #[tauri::command]
 pub async fn update_contact(
