@@ -50,7 +50,7 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
     document.addEventListener('mousedown', handleClickOutListProduct)
 
     return () => document.addEventListener('mousedown', handleClickOutListProduct)
-  }, [showAccountSuggestions])
+  }, [showAccountSuggestions, setShowAccountSuggestions])
 
   const isEditing = editingPassword && true
   
