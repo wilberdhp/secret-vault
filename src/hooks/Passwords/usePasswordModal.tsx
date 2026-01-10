@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useApp from "../useApp";
 import { analyzePassword, generatePassword } from "../../lib/password-functions";
 import { invoke } from "@tauri-apps/api/core";
@@ -24,6 +24,33 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
   useEffect(() => {
     if (editingPassword) setPasswordForm(editingPassword)
   }, [editingPassword])
+
+  const accountSuggestionsRef = useRef<HTMLDivElement>(null);
+  const inputAccountRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleClickOutListProduct = (e: MouseEvent): void => {
+
+      if (
+        inputAccountRef.current &&
+        inputAccountRef.current.contains(e.target as Node)
+      ) {
+        return
+      }
+
+      if (
+        showAccountSuggestions &&
+        accountSuggestionsRef.current &&
+        !accountSuggestionsRef.current.contains(e.target as Node)
+      ) {
+        setShowAccountSuggestions(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutListProduct)
+
+    return () => document.addEventListener('mousedown', handleClickOutListProduct)
+  }, [showAccountSuggestions])
 
   const isEditing = editingPassword && true
   
@@ -125,7 +152,9 @@ function usePasswordModal({ getPasswords }: usePasswordModalProps) {
     showAccountSuggestions, 
     setShowAccountSuggestions,
     filteredPredefinedAccounts,
-    passwordFormErrors
+    passwordFormErrors,
+    accountSuggestionsRef,
+    inputAccountRef
   }
 }
 

@@ -9,7 +9,8 @@ interface PasswordModal {
 
 function PasswordModal({ getPasswords }: PasswordModal) {
   
-  const { passwordForm, setPasswordForm, generatedPassword, passwordStrength, isEditing, closeModal, generateSecurePassword, analyzePasswordStrength, handleAddPassword, filteredPredefinedAccounts, showAccountSuggestions, setShowAccountSuggestions, passwordFormErrors } = usePasswordModal({ getPasswords })
+  const { passwordForm, setPasswordForm, generatedPassword, passwordStrength, isEditing, closeModal, generateSecurePassword, analyzePasswordStrength, handleAddPassword, filteredPredefinedAccounts, showAccountSuggestions, setShowAccountSuggestions, passwordFormErrors, accountSuggestionsRef, inputAccountRef } = usePasswordModal({ getPasswords })
+
 
   
 
@@ -42,6 +43,7 @@ function PasswordModal({ getPasswords }: PasswordModal) {
           Cuenta
         </label>
         <input
+          ref={inputAccountRef}
           type="text"
           value={passwordForm.account}
           onChange={(e) => {
@@ -65,7 +67,7 @@ function PasswordModal({ getPasswords }: PasswordModal) {
         )}
 
         {showAccountSuggestions && filteredPredefinedAccounts.length > 0 && (
-          <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          <div ref={accountSuggestionsRef} className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
             {filteredPredefinedAccounts.map((account) => (
               <div
                 key={account.name}
