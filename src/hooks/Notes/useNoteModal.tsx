@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useApp from "../useApp";
 import { invoke } from "@tauri-apps/api/core";
 
@@ -14,6 +14,16 @@ function useNoteModal({ getNotes }: useNoteModalProps) {
   const [noteFormErrors, setNoteFormErrors] = useState<NoteError>({ title: '', content: '' });
 
   const { changeShowNoteModal, idUser, changeShowErrorModal, setError } = useApp()
+
+  useEffect(() => {
+
+    const { content, title } = noteFormErrors
+
+    if (title.trim() || content.trim()) {
+      setNoteFormErrors({ title: '', content: '' })
+    }
+    
+  }, [noteForm])
 
   // Validate note form
   const validateNoteForm = () => {
@@ -34,9 +44,11 @@ function useNoteModal({ getNotes }: useNoteModalProps) {
 
   const handleAddNote = async () => {
 
-    if (!validateNoteForm()) return;
+    if (validateNoteForm()) return;
 
     const { title, content } = noteForm
+
+    console.log(noteForm)
 
     await invoke("insert_note", { idUser, title, content })
       .then()
