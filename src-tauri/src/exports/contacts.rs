@@ -1,14 +1,6 @@
-use serde::Serialize;
-
 use crate::models::contacts::ContactDto;
 use std::{io::Write};
 
-#[derive(Serialize)]
-struct CsvContact {
-  name: String,
-  email: String,
-  phones: String,
-}
 
 pub fn write_contacts_vcf<W: Write>(
     writer: &mut W,
